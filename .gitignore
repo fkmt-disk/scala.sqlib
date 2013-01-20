@@ -1,0 +1,6 @@
+.cache
+classes/
+lib/
+main/classes/*
+sqlib.iml
+test/classes/*
