@@ -1,31 +1,35 @@
 package sqlib.core
 
-final class TextColumn[T <: Table](val name: String) extends Column[T]("text") {
+final class TextColumn[T <: Table](name: String) extends Column[T]("text") {
   
   override protected def equalsImpl(x: Any) = x match {
-    case n if n == null =>
-      Column addWhereClause Condition("%s is null".format(name), x)
-    case s: String =>
-      Column addWhereClause Condition("%s = '?'".format(name), x)
+    case nil if nil == null =>
+      WhereClause.get.buffer += Condition("%s is null".format(name), nil)
+    case str: String =>
+      WhereClause.get.buffer += Condition("%s = '?'".format(name), str)
     case _ =>
       equalsImpl(x.toString)
   }
   
-  def <>(x: Any): Column[T] = x match {
-    case n if n == null =>
-      Column addWhereClause Condition("%s is not null".format(name), x)
-      this
-    case s: String =>
-      Column addWhereClause Condition("%s <> '?'".format(name), x)
-      this
+  def <>(x: Any): WhereClause[T] = x match {
+    case nil if nil == null =>
+      val clause: WhereClause[T] = WhereClause.get
+      clause.buffer += Condition("%s is not null".format(name), nil)
+      clause
+    case str: String =>
+      val clause: WhereClause[T] = WhereClause.get
+      clause.buffer += Condition("%s <> '?'".format(name), str)
+      clause
     case _ =>
-      Column addWhereClause Condition("%s <> '?'".format(name), x.toString)
-      this
+      val clause: WhereClause[T] = WhereClause.get
+      clause.buffer += Condition("%s <> '?'".format(name), x.toString)
+      clause
   }
   
-  def ~(x: String): Column[T] = {
-    Column addWhereClause Condition("%s like ('%'||'?'||'%')".format(name), x)
-    this
+  def ~(x: String): WhereClause[T] = {
+    val clause: WhereClause[T] = WhereClause.get
+    clause.buffer += Condition("%s like ('%%' || ? || '%%')".format(name), x.toString)
+    clause
   }
   
 }

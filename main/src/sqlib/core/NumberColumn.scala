@@ -1,45 +1,51 @@
 package sqlib.core
 
-final class NumberColumn[T <: Table](val name: String) extends Column[T]("number") {
+final class NumberColumn[T <: Table](name: String) extends Column[T]("number") {
   
   override protected def equalsImpl(x: Any) = x match {
     case nil if nil == null =>
-      Column addWhereClause Condition("%s is null".format(name), nil)
+      WhereClause.get.buffer.append(Condition("%s is null".format(name), nil))
     case num: Number =>
-      Column addWhereClause Condition("%s = ?".format(name), num)
+      WhereClause.get.buffer.append(Condition("%s = ?".format(name), num))
     case _ =>
       throw new IllegalArgumentException(x.toString)
   }
   
-  def <>(x: Any): Column[T] = x match {
+  def <>(x: Any): WhereClause[T] = x match {
     case nil if nil == null =>
-      Column addWhereClause Condition("%s is not null".format(name), nil)
-      this
+      val clause: WhereClause[T] = WhereClause.get
+      clause.buffer.append(Condition("%s is not null".format(name), nil))
+      clause
     case num: Number =>
-      Column addWhereClause Condition("%s <> ?".format(name), num)
-      this
+      val clause: WhereClause[T] = WhereClause.get
+      clause.buffer.append(Condition("%s <> ?".format(name), num))
+      clause
     case _ =>
       throw new IllegalArgumentException(x.toString)
   }
   
-  def <(x: Number): Column[T] = {
-    Column addWhereClause Condition("%s < ?".format(name), x)
-    this
+  def <(x: Number): WhereClause[T] = {
+    val clause: WhereClause[T] = WhereClause.get
+    clause.buffer.append(Condition("%s < ?".format(name), x))
+    clause
   }
   
-  def <=(x: Number): Column[T] = {
-    Column addWhereClause Condition("%s <= ?".format(name), x)
-    this
+  def <=(x: Number): WhereClause[T] = {
+    val clause: WhereClause[T] = WhereClause.get
+    clause.buffer.append(Condition("%s <= ?".format(name), x))
+    clause
   }
   
-  def >(x: Number): Column[T] = {
-    Column addWhereClause Condition("%s > ?".format(name), x)
-    this
+  def >(x: Number): WhereClause[T] = {
+    val clause: WhereClause[T] = WhereClause.get
+    clause.buffer.append(Condition("%s > ?".format(name), x))
+    clause
   }
   
-  def >=(x: Number): Column[T] = {
-    Column addWhereClause Condition("%s >= ?".format(name), x)
-    this
+  def >=(x: Number): WhereClause[T] = {
+    val clause: WhereClause[T] = WhereClause.get
+    clause.buffer.append(Condition("%s >= ?".format(name), x))
+    clause
   }
   
 }

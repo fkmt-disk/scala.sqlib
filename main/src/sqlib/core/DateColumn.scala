@@ -2,64 +2,70 @@ package sqlib.core
 
 import java.util.Date
 
-final class DateColumn[T <: Table](val name: String) extends Column[T]("date") {
-  
+final class DateColumn[T <: Table](name: String) extends Column[T]("date") {
+
   override protected def equalsImpl(x: Any) = x match {
-    case n if n == null =>
-      Column addWhereClause Condition("%s is null".format(name), n)
-    case s: String =>
-      Column addWhereClause Condition("%s = '?'".format(name), x)
-    case d: Date   =>
-      equalsImpl("%1$tF %1$tT" format x)
+    case nil if nil == null =>
+      WhereClause.get.buffer += Condition("%s is null".format(name), nil)
+    case str: String =>
+      WhereClause.get.buffer += Condition("%s = '?'".format(name), str)
+    case dt: Date =>
+      equalsImpl("%1$tF %1$tT" format dt)
   }
   
-  def <>(x: Any): Column[T] = x match {
+  def <>(x: Any): WhereClause[T] = x match {
     case nil if nil == null =>
-      Column addWhereClause Condition("%s is not null".format(name), nil)
-      this
+      val clause: WhereClause[T] = WhereClause.get
+      clause.buffer += Condition("%s is not null".format(name), nil)
+      clause
     case str: String =>
-      Column addWhereClause Condition("%s <> '?'".format(name), str)
-      this
-    case date: Date =>
-      <>("%1$tF %1$tT" format date)
+      val clause: WhereClause[T] = WhereClause.get
+      clause.buffer += Condition("%s <> '?'".format(name), str)
+      clause
+    case dt: Date =>
+      <>("%1$tF %1$tT" format dt)
     case _ =>
       <>(x.toString)
   }
   
-  def <(x: Date): Column[T] = {
+  def <(x: Date): WhereClause[T] = {
     <("%1$tF %1$tT" format x)
   }
   
-  def <(x: String): Column[T] = {
-    Column addWhereClause Condition("%s < '?'".format(name), x)
-    this
+  def <(x: String): WhereClause[T] = {
+    val clause: WhereClause[T] = WhereClause.get
+    clause.buffer += Condition("%s < '?'".format(name), x)
+    clause
   }
   
-  def <=(x: Date): Column[T] = {
+  def <=(x: Date): WhereClause[T] = {
     <=("%1$tF %1$tT" format x)
   }
   
-  def <=(x: String): Column[T] = {
-    Column addWhereClause Condition("%s <= '?'".format(name), x)
-    this
+  def <=(x: String): WhereClause[T] = {
+    val clause: WhereClause[T] = WhereClause.get
+    clause.buffer += Condition("%s <= '?'".format(name), x)
+    clause
   }
   
-  def >(x: Date): Column[T] = {
+  def >(x: Date): WhereClause[T] = {
     >("%1$tF %1$tT" format x)
   }
   
-  def >(x: String): Column[T] = {
-    Column addWhereClause Condition("%s > '?'".format(name), x)
-    this
+  def >(x: String): WhereClause[T] = {
+    val clause: WhereClause[T] = WhereClause.get
+    clause.buffer += Condition("%s > '?'".format(name), x)
+    clause
   }
   
-  def >=(x: Date): Column[T] = {
+  def >=(x: Date): WhereClause[T] = {
     >=("%1$tF %1$tT" format x)
   }
   
-  def >=(x: String): Column[T] = {
-    Column addWhereClause Condition("%s >= '?'".format(name), x)
-    this
+  def >=(x: String): WhereClause[T] = {
+    val clause: WhereClause[T] = WhereClause.get
+    clause.buffer += Condition("%s >= '?'".format(name), x)
+    clause
   }
   
 }

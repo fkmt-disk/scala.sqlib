@@ -8,9 +8,7 @@ case class FooTable(
     pkey: Number,
     varchae_column: String,
     entry_date: Date
-) extends Table {
-
-}
+) extends Table
 
 object FooTable extends Table {
   

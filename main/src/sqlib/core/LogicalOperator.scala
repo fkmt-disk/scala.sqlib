@@ -2,9 +2,9 @@ package sqlib.core
 
 private[core] object LogicalOperator {
   
-  object And extends LogicalOperator("and") with WhereClause
+  object And extends LogicalOperator("and") with SqlParts
   
-  object Or extends LogicalOperator("or") with WhereClause
+  object Or extends LogicalOperator("or") with SqlParts
   
 }
 

@@ -12,7 +12,7 @@ object Main extends App {
   using(DerbyDataSource.getConnection) { conn =>
     println(conn.getMetaData.getDatabaseProductName)
 
-    FooTable.select( pkey == 123 )
+    FooTable.select( pkey == 123 and (varchar_column ~ "hoge" or entry_date < new java.util.Date) )
 
   }
   
