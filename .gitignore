@@ -1,4 +1,5 @@
 .cache
 classes/*
+sample.db/*
 sqlib.iml
 derby.log
