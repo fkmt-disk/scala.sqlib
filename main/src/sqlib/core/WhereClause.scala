@@ -3,39 +3,37 @@ package sqlib.core
 import collection.mutable.ListBuffer
 import annotation.tailrec
 
-class WhereClause[T <: Table] private[core]() {
-
+final class WhereClause[T] private[core] {
+  
   private[core] val buffer = new ListBuffer[SqlParts]
-
+  
   def and(clause: WhereClause[T]): WhereClause[T] = {
-    buffer += LogicalOperator.And
+    buffer append LogicalOperator.And
     this
   }
-
+  
   def or(clause: WhereClause[T]): WhereClause[T] = {
-    buffer += LogicalOperator.Or
+    buffer append LogicalOperator.Or
     this
   }
-
-  private[core] def mksql: (String, List[Any]) = {
+  
+  private[core] def build: (String, List[Any]) = {
     val sortedClauses = sort(new ListBuffer[ListBuffer[SqlParts]], buffer).toList
-    var params = new ListBuffer[Any]
-    val sql = sortedClauses.map { clause =>
-      clause match {
-        case x: Bracket =>
-          x.toString
-        case x: LogicalOperator =>
-          x.toString
-        case x: Condition =>
-          params += x.value
-          x.clause
-        case _ =>
-          sys.error("unknown clause type: %s" format clause)
-      }
+    val params = new ListBuffer[Any]
+    val sql = sortedClauses.map {
+      case x: Bracket =>
+        x.toString
+      case x: LogicalOperator =>
+        x.toString
+      case x: Condition =>
+        params append x.value
+        x.clause
+      case oth =>
+        sys.error("unknown clause type: %s" format oth)
     }
     (sql.mkString(" "), params.toList)
   }
-
+  
   @tailrec
   private[this] def sort(buffer: ListBuffer[ListBuffer[SqlParts]], list: Seq[SqlParts]): ListBuffer[SqlParts] = {
     list match {
@@ -59,16 +57,14 @@ class WhereClause[T <: Table] private[core]() {
         sys.error("sort failed: buffer=%s, list=%s" format (buffer, list))
     }
   }
-
+  
 }
 
 private[core] object WhereClause {
-
-  private[this] val threadlocal = new ThreadLocal[WhereClause[_]] {
-    override def initialValue = null
-  }
-
-  def get[T <: Table]: WhereClause[T] = {
+  
+  private[this] val threadlocal = new ThreadLocal[WhereClause[_]]
+  
+  def get[T]: WhereClause[T] = {
     var clause = threadlocal.get.asInstanceOf[WhereClause[T]]
     if (clause == null) {
       clause = new WhereClause[T]
@@ -76,9 +72,9 @@ private[core] object WhereClause {
     }
     return clause
   }
-
+  
   def clear {
     threadlocal.remove
   }
-
+  
 }

@@ -1,6 +1,4 @@
 .cache
-classes/
-lib/
-main/classes/*
+classes/*
 sqlib.iml
-test/classes/*
+derby.log

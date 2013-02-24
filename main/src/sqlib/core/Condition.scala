@@ -1,6 +1,13 @@
 package sqlib.core
 
 private[core] case class Condition(
-    clause: String,
-    value: Any
-) extends SqlParts
+    assign: Any,
+    format: String,
+    args: Any*
+) extends SqlParts {
+  
+  val clause: String = format.format(args:_*)
+  
+  val value: Any = assign
+  
+}
