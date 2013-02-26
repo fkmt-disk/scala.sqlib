@@ -2,9 +2,9 @@ package sqlib.core
 
 private[core] object Bracket {
   
-  object begin extends Bracket("(") with SqlParts
+  object begin extends Bracket("(")
   
-  object term extends Bracket(")") with SqlParts
+  object term extends Bracket(")")
   
 }
 

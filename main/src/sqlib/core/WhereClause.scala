@@ -5,7 +5,7 @@ import annotation.tailrec
 
 final class WhereClause[T] private[core] {
   
-  private[core] val buffer = new ListBuffer[SqlParts]
+  private[core] val buffer = new ListBuffer[Any]
   
   def and(clause: WhereClause[T]): WhereClause[T] = {
     buffer append LogicalOperator.And
@@ -18,7 +18,7 @@ final class WhereClause[T] private[core] {
   }
   
   private[core] def build: (String, List[Any]) = {
-    val sortedClauses = sort(new ListBuffer[ListBuffer[SqlParts]], buffer).toList
+    val sortedClauses = sort(new ListBuffer[ListBuffer[Any]], buffer).toList
     val params = new ListBuffer[Any]
     val sql = sortedClauses.map {
       case x: Bracket =>
@@ -35,7 +35,7 @@ final class WhereClause[T] private[core] {
   }
   
   @tailrec
-  private[this] def sort(buffer: ListBuffer[ListBuffer[SqlParts]], list: Seq[SqlParts]): ListBuffer[SqlParts] = {
+  private[this] def sort(buffer: ListBuffer[ListBuffer[Any]], list: Seq[Any]): ListBuffer[Any] = {
     list match {
       case Seq(cond0: Condition, cond1: Condition, _*) =>
         buffer append ListBuffer(Bracket.begin, list.head)
