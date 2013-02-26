@@ -4,13 +4,6 @@ import sqlib.core._
 
 final class IntColumn[T](name: String, sqltype: Int) extends Column[T](name, sqltype) {
   
-  def :=(x: Int) = SetClause[T](name, x)
-  
-  def :=(x: Option[Int]) = x match {
-    case Some(i) => SetClause[T](name, i)
-    case None => SetClause[T](name, null)
-  }
-  
   override protected def equalsImpl(x: Any) = x match {
     case x if x == null =>
       WhereClause.get.buffer += Condition(x, "%s is null", name)

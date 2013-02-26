@@ -4,8 +4,6 @@ import sqlib.core._
 
 final class TextColumn[T](name:String, sqltype: Int) extends Column[T](name, sqltype) {
   
-  def :=(x: String) = SetClause[T](name, x)
-  
   override protected def equalsImpl(x: Any) = x match {
     case x if x == null =>
       WhereClause.get.buffer += Condition(x, "%s is null", name)

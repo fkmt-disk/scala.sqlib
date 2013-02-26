@@ -1,17 +1,12 @@
 package sqlib.core
 
+import sqlib.core._
 import sqlib.core.column._
 import sqlib.core.sequel._
 
 abstract class Entity {
   
   type T
-  
-  implicit final def bool2column(bool: Boolean): WhereClause[T] = {
-    if (bool)
-      throw new UnsupportedOperationException("`!=` is unsupported; must be use `<>`")
-    WhereClause.get
-  }
   
   def select: SelectSequel[T] = new SelectSequel
   
@@ -22,5 +17,13 @@ abstract class Entity {
   def insert: InsertSequel[T] = new InsertSequel
   
   def delete: DeleteSequel[T] = new DeleteSequel
+  
+  protected def set(column: Column[T], x: Any): SetClause[T] = SetClause(column.name, x)
+  
+  implicit final def bool2column(x: Boolean): WhereClause[T] = Preamble.bool2column(x)
+  
+  implicit final def str2date(x: String): java.util.Date = Preamble.str2date(x)
+  
+  implicit final def int2opt(x: Int): Option[Int] = Preamble.int2opt(x)
   
 }

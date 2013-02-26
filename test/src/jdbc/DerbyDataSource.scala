@@ -9,8 +9,7 @@ import org.apache.derby.jdbc.EmbeddedDataSource
 object DerbyDataSource {
   
   def using[A <: {def close(): Unit}, B](resource: A)(main: A => B): B = {
-    try { main(resource) }
-    finally { resource.close() }
+    try { main(resource) } finally { resource.close() }
   }
   
   Runtime.getRuntime.addShutdownHook(new Thread() {
@@ -29,6 +28,7 @@ object DerbyDataSource {
   val datasource = new EmbeddedDataSource
   
   datasource.setDatabaseName(dbpath.getCanonicalPath)
+  println("db-path=" + dbpath.getCanonicalPath)
   
   if (dbpath.exists() == false)
     datasource.setCreateDatabase("create")
