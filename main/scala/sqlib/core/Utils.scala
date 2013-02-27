@@ -2,9 +2,9 @@ package sqlib.core
 
 import java.text.{ SimpleDateFormat => SDF }
 
-private[core] object Preamble {
+private[core] object Utils {
   
-  implicit private[core] def bool2column[T](x: Boolean): WhereClause[T] = {
+  private[core] def bool2column[T](x: Boolean): WhereClause[T] = {
     if (x)
       throw new UnsupportedOperationException("`!=` is unsupported; must be use `<>`")
     WhereClause.get
@@ -17,7 +17,7 @@ private[core] object Preamble {
   private[this] val yyyyMMdd_HHmmss_SSS1 = """(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})""".r
   private[this] val yyyyMMdd_HHmmss_SSS2 = """(\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\.\d{3})""".r
   
-  implicit private[core] def str2date(x: String): java.util.Date = x match {
+  private[core] def str2date(x: String): java.util.Date = x match {
     case yyyyMMdd1(x) => new SDF("yyyy-MM-dd").parse(x)
     case yyyyMMdd2(x) => new SDF("yyyy/MM/dd").parse(x)
     case yyyyMMdd_HHmmss1(x) => new SDF("yyyy-MM-dd HH:mm:ss").parse(x)
@@ -27,6 +27,6 @@ private[core] object Preamble {
     case _ => throw new IllegalArgumentException(x)
   }
   
-  implicit private[core] def int2opt(x: Int): Option[Int] = Some(x)
+  private[core] def int2opt(x: Int): Option[Int] = Some(x)
   
 }

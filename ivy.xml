@@ -1,0 +1,9 @@
+<ivy-module version="2.0">
+  
+  <info module="scala.sqlib" organisation="" />
+  
+  <dependencies>
+    <dependency org="org.apache.derby" name="derby" rev="10.9.1.0" />
+  </dependencies>
+  
+</ivy-module>

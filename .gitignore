@@ -1,5 +1,8 @@
+lib/
+build/*
+main/classes/*
+test/classes/*
+test/sample.db/
+.ant-targets-build.xml
 .cache
-classes/*
-sample.db/*
-sqlib.iml
 derby.log

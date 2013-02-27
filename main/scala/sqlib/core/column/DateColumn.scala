@@ -12,7 +12,7 @@ final class DateColumn[T](name: String, sqltype: Int) extends Column[T](name, sq
     case x: Date =>
       WhereClause.get.buffer += Condition(x, "%s = ?", name)
     case x: String =>
-      equalsImpl(Preamble str2date x)
+      equalsImpl(Utils str2date x)
     case _ =>
       throw new IllegalArgumentException(String valueOf x)
   }
@@ -27,7 +27,7 @@ final class DateColumn[T](name: String, sqltype: Int) extends Column[T](name, sq
       clause.buffer += Condition(x, "%s <> ?", name)
       clause
     case x: String =>
-      <>(Preamble str2date x)
+      <>(Utils str2date x)
     case _ =>
       throw new IllegalArgumentException(String valueOf x)
   }

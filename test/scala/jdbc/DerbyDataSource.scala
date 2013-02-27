@@ -23,14 +23,15 @@ object DerbyDataSource {
     }
   })
   
-  val dbpath = new File(System getProperty "user.dir", "sample.db")
+  val root_dir = new File(System getProperty "user.dir").getCanonicalFile
+  val db_path = new File(root_dir, "test/sample.db")
   
   val datasource = new EmbeddedDataSource
   
-  datasource.setDatabaseName(dbpath.getCanonicalPath)
-  println("db-path=" + dbpath.getCanonicalPath)
+  datasource.setDatabaseName(db_path.getCanonicalPath)
+  println("db_path=" + db_path.getCanonicalPath)
   
-  if (dbpath.exists() == false)
+  if (db_path.exists() == false)
     datasource.setCreateDatabase("create")
   
   using(datasource.getConnection) { conn: Connection =>

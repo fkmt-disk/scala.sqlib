@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="scala.sqlib" xmlns:ivy="antlib:org.apache.ivy.ant">
+  
+  <description>
+    SCALA_HOMEが定義されていること。
+    classpathにApache-Ivyが含まれていること。
+  </description>
+  
+  <property environment="env" />
+  
+  <property name="main_dir" value="${basedir}/main" />
+  <property name="test_dir" value="${basedir}/test" />
+  <property name="build_dir" value="${basedir}/build" />
+  
+  <property name="version" value="0.1" />
+  <property name="jar_name" value="${ant.project.name}-${version}.jar" />
+  
+  <path id="scala_lib">
+    <fileset dir="${env.SCALA_HOME}/lib" includes="*.jar" />
+  </path>
+  
+  <path id="base_classpath">
+    <path refid="scala_lib" />
+    <fileset dir="${basedir}/lib" includes="*.jar" />
+  </path>
+  
+  <path id="main_classpath">
+    <path refid="base_classpath" />
+    <pathelement location="${main_dir}/classes" />
+  </path>
+  
+  <path id="test_classpath">
+    <path refid="main_classpath" />
+    <pathelement location="${test_dir}/classes" />
+  </path>
+  
+  <taskdef resource="scala/tools/ant/antlib.xml" classpathref="scala_lib" />
+  
+  <macrodef name="compile">
+    <attribute name="srcdir" />
+    <attribute name="outdir" />
+    <attribute name="cpref" />
+    <sequential>
+      <delete dir="@{outdir}" />
+      <mkdir dir="@{outdir}" />
+      <fsc srcdir="@{srcdir}" destdir="@{outdir}" classpathref="@{cpref}" failonerror="false" />
+    </sequential>
+  </macrodef>
+  
+  <condition property="initialized">
+    <available file="${basedir}/lib" />
+  </condition>
+  
+  <target name="init" unless="initialized">
+    <ivy:retrieve />
+  </target>
+  
+  <target name="_compile_main" depends="init">
+    <compile srcdir="${main_dir}/scala" outdir="${main_dir}/classes" cpref="base_classpath" />
+  </target>
+  
+  <target name="_compile_test" depends="_compile_main">
+    <compile srcdir="${test_dir}/scala" outdir="${test_dir}/classes" cpref="main_classpath" />
+  </target>
+  
+  <target name="test" depends="_compile_test">
+    <java classname="test.Main" classpathref="test_classpath" />
+  </target>
+  
+  <target name="build" depends="_compile_main">
+    <delete file="${build_dir}/${jar_name}" />
+    <jar destfile="${build_dir}/${jar_name}" basedir="${main_dir}/classes" includes="**/*.class" />
+  </target>
+  
+</project>
