@@ -3,7 +3,6 @@ package test
 import java.util.Date
 import jdbc.DerbyDataSource
 import entity.M_Address
-import entity.M_Address._
 
 object Main extends App {
   
@@ -13,6 +12,8 @@ object Main extends App {
   
   using(DerbyDataSource.getConnection) { conn =>
     println(conn.getMetaData.getDatabaseProductName)
+    
+    import M_Address._
     
     val rows: List[M_Address] = M_Address
       .select( row_id, zip_code, modify_at )
@@ -26,10 +27,10 @@ object Main extends App {
     //    order by modify_at desc, zip_code asc
     // List(123, hoge, fuga)
     
-    M_Address.select.where( row_id >= 123 and state ~ "hoge" or town <> "fuga" ).go(conn)
+    M_Address.select.where( row_id == None and state ~ "hoge" or town <> "fuga" ).go(conn)
     // => select * from m_address
-    //    where ( row_id >= ? and state like ('%' || ? || '%') or town <> ? )
-    // List(123, hoge, fuga)
+    //    where ( row_id is null and state like ('%' || ? || '%') or town <> ? )
+    // List(None, hoge, fuga)
     
     M_Address.select.go(conn)
     // => select * from m_address

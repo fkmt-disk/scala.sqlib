@@ -9,6 +9,8 @@ final class DateColumn[T](name: String, sqltype: Int) extends Column[T](name, sq
   override protected def equalsImpl(x: Any) = x match {
     case x if x == null =>
       WhereClause.get.buffer += Condition(x, "%s is null", name)
+    case None =>
+      WhereClause.get.buffer += Condition(x, "%s is null", name)
     case x: Date =>
       WhereClause.get.buffer += Condition(x, "%s = ?", name)
     case x: String =>

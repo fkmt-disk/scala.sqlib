@@ -7,6 +7,8 @@ final class IntColumn[T](name: String, sqltype: Int) extends Column[T](name, sql
   override protected def equalsImpl(x: Any) = x match {
     case x if x == null =>
       WhereClause.get.buffer += Condition(x, "%s is null", name)
+    case None =>
+      WhereClause.get.buffer += Condition(x, "%s is null", name)
     case x: Int =>
       WhereClause.get.buffer += Condition(x, "%s = ?", name)
     case _ =>
