@@ -6,7 +6,7 @@ import sqlib.core._
 import sqlib.core.column._
 
 case class M_Address(
-    row_id: Int,
+    row_id: Integer,
     zip_code: String,
     state: String,
     city: String,
@@ -20,17 +20,17 @@ object M_Address extends Entity {
   
   import java.sql.Types._
   
-  private[this] val _row_id = new IntColumn[T]("row_id", INTEGER)
+  private[this] val _row_id = new IntColumn[T]("row_id", 1, INTEGER)
   
-  private[this] val _zip_code = new TextColumn[T]("zip_code", CHAR)
+  private[this] val _zip_code = new TextColumn[T]("zip_code", 2, CHAR)
   
-  private[this] val _state = new TextColumn[T]("state", VARCHAR)
+  private[this] val _state = new TextColumn[T]("state", 3, VARCHAR)
   
-  private[this] val _city = new TextColumn[T]("city", VARCHAR)
+  private[this] val _city = new TextColumn[T]("city", 4, VARCHAR)
   
-  private[this] val _town = new TextColumn[T]("town", VARCHAR)
+  private[this] val _town = new TextColumn[T]("town", 5, VARCHAR)
   
-  private[this] val _modify_at = new DateColumn[T]("modify_at", TIMESTAMP)
+  private[this] val _modify_at = new DateColumn[T]("modify_at", 6, TIMESTAMP)
   
   def row_id = _row_id
   

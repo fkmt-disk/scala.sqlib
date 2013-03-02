@@ -4,6 +4,10 @@ import java.sql.Connection
 import sqlib.core._
 import sqlib.core.column._
 import scala.collection.mutable.ListBuffer
+import scala.reflect._
+import org.apache.commons.dbutils.QueryRunner
+import sqlib.dbutils.CaseClassResultSetHandler
+import sqlib.dbutils.CaseClassResultSetHandler
 
 final class SelectSequel[T] private[core](columns: Column[T]*) {
   
@@ -11,7 +15,7 @@ final class SelectSequel[T] private[core](columns: Column[T]*) {
   
   private[this] var _distinct: Boolean = false
   
-  private[this] var _where: (String, List[Any]) = null
+  private[this] var _where: (String, List[AnyRef]) = null
   
   private[this] var _orders: List[SortOrder[T]] = null
   
@@ -31,8 +35,8 @@ final class SelectSequel[T] private[core](columns: Column[T]*) {
     return this
   }
   
-  def go(conn: Connection)(implicit manifest: ClassManifest[T]): List[T] = {
-    val klass: Class[_] = manifest.erasure
+  def go(conn: Connection)(implicit tag: ClassTag[T]): List[T] = {
+    val klass  = tag.runtimeClass.asInstanceOf[Class[T]]
     
     val buff = new ListBuffer[String]
     
@@ -46,24 +50,27 @@ final class SelectSequel[T] private[core](columns: Column[T]*) {
     else
       buff append _columns.map(_.name).mkString(", ")
     
-    buff append ("from " + klass.getSimpleName.toLowerCase)
+    buff append s"from ${klass.getSimpleName.toLowerCase}"
     
     if (_where != null)
-      buff append ("where " + _where._1)
+      buff append s"where ${_where._1}"
     
     if (_orders != null)
-      buff append ("order by " + _orders.map(_.clause).mkString(", "))
+      buff append s"order by ${_orders.map(_.clause).mkString(", ")}"
     
     val sql = buff.mkString(" ")
     
-    // TODO
+    val runner = new QueryRunner
+    val rsh = new CaseClassResultSetHandler[T]
     
     _where match {
-      case x if x == null => println(sql)
-      case _ => printf("%s; %s%n", sql, _where._2)
+      case x if x == null =>
+        println(sql)
+        runner.query(conn, sql, rsh)
+      case _ =>
+        println(s"$sql; ${_where._2}")
+        runner.query(conn, sql, rsh, _where._2:_*)
     }
-    
-    return Nil
   }
   
 }

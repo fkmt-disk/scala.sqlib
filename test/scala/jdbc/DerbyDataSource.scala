@@ -18,7 +18,7 @@ object DerbyDataSource {
         DriverManager.getConnection("jdbc:derby:;shutdown=true")
       }
       catch {
-        case e => println(e.getMessage)
+        case e: Throwable => println(e.getMessage)
       }
     }
   })

@@ -2,27 +2,27 @@ package sqlib.core.column
 
 import sqlib.core._
 
-final class IntColumn[T](name: String, sqltype: Int) extends Column[T](name, sqltype) {
+final class IntColumn[T](name: String, ordinal: Int, sqltype: Int) extends Column[T](name, ordinal, sqltype) {
+  
+  private def toInteger(i: Int) = i.asInstanceOf[Integer]
   
   override protected def equalsImpl(x: Any) = x match {
-    case x if x == null =>
-      WhereClause.get.buffer += Condition(x, "%s is null", name)
-    case None =>
-      WhereClause.get.buffer += Condition(x, "%s is null", name)
+    case None | _ if x == null =>
+      WhereClause.get.buffer += Condition(s"$name is null", null)
     case x: Int =>
-      WhereClause.get.buffer += Condition(x, "%s = ?", name)
+      WhereClause.get.buffer += Condition(s"$name = ?", toInteger(x))
     case _ =>
       throw new IllegalArgumentException(String valueOf x)
   }
   
   def <>(x: Any): WhereClause[T] = x match {
-    case x if x == null =>
+    case None | _ if x == null =>
       val clause: WhereClause[T] = WhereClause.get
-      clause.buffer += Condition(x, "%s is not null", name)
+      clause.buffer += Condition(s"$name is not null", null)
       clause
     case x: Int =>
       val clause: WhereClause[T] = WhereClause.get
-      clause.buffer += Condition(x, "%s <> ?",name)
+      clause.buffer += Condition(s"$name <> ?", toInteger(x))
       clause
     case _ =>
       throw new IllegalArgumentException(String valueOf x)
@@ -30,25 +30,25 @@ final class IntColumn[T](name: String, sqltype: Int) extends Column[T](name, sql
   
   def <(x: Int): WhereClause[T] = {
     val clause: WhereClause[T] = WhereClause.get
-    clause.buffer += Condition(x, "%s < ?", name)
+    clause.buffer += Condition(s"$name < ?", toInteger(x))
     clause
   }
   
   def <=(x: Int): WhereClause[T] = {
     val clause: WhereClause[T] = WhereClause.get
-    clause.buffer += Condition(x, "%s <= ?", name)
+    clause.buffer += Condition(s"$name <= ?", toInteger(x))
     clause
   }
   
   def >(x: Int): WhereClause[T] = {
     val clause: WhereClause[T] = WhereClause.get
-    clause.buffer += Condition(x, "%s > ?", name)
+    clause.buffer += Condition(s"$name > ?", toInteger(x))
     clause
   }
   
   def >=(x: Int): WhereClause[T] = {
     val clause: WhereClause[T] = WhereClause.get
-    clause.buffer += Condition(x, "%s >= ?", name)
+    clause.buffer += Condition(s"$name >= ?", toInteger(x))
     clause
   }
   
