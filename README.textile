@@ -15,7 +15,7 @@ create table m_address(
   , modify_at timestamp not null default current timestamp
   , constraint m_address_pkc primary key (row_id)
 )
-<pre>
+</pre>
 
 のようなテーブルがあった時に
 
@@ -24,7 +24,7 @@ val rows: List[M_Address] = M_Address
   .select
   .where(row_id >= 123 and town <> "fuga")
   .go(conn)
-<pre>
+</pre>
 
 このようににSELECTを書ける。
 
@@ -42,7 +42,7 @@ val rows: List[M_Address] = M_Address
   .where( row_id >= 123 and (state ~ "hoge" or town <> "fuga") )
   .orderBy( modify_at.desc, zip_code.asc )
   .go(conn)
-<pre>
+</pre>
 
 このコードは
 
@@ -51,7 +51,7 @@ select distinct row_id, zip_code, modify_at
 from m_address
 where ( row_id >= 123 and ( state like '%' || ? || '%' or town <> ?) )
 order by modift_at desc, zip_code asc
-<pre>
+</pre>
 
 のようなsqlでPreparedStatementを作り、
 
@@ -71,7 +71,7 @@ val mod_row_count = M_Address.update
   .set( row_id = None, modify_at = "2013-02-27 00:22:12" )
   .where( state == "piyo" )
   .go(conn)
-<pre>
+</pre>
 
 は
 
@@ -81,14 +81,14 @@ set row_id = ?, modify_at = ?
 where ( state = ? )
 
 params = (null, Wed Feb 27 00:22:12 JST 2013, piyo)
-<pre>
+</pre>
 
 
 +*insert*+
 
 <pre>
 M_Address.insert.values( row_id = 123, state = "hoge", city = "fuga" ).go(conn)
-<pre>
+</pre>
 
 は
 
@@ -96,14 +96,14 @@ M_Address.insert.values( row_id = 123, state = "hoge", city = "fuga" ).go(conn)
 insert into m_address (row_id, state, city) values (?, ?, ?)
 
 params = (123, hoge, fuga)
-<pre>
+</pre>
 
 
 +*delete*+
 
 <pre>
 M_Address.delete.where( row_id > 100 ).go(conn)
-<pre>
+</pre>
 
 は
 
@@ -111,7 +111,7 @@ M_Address.delete.where( row_id > 100 ).go(conn)
 delete from m_address where ( row_id > ? )
 
 params = (100)
-<pre>
+</pre>
 
 
 ---
