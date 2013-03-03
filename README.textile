@@ -5,7 +5,7 @@ h3. scala sql library
 scalaコードの中でなるべく自然にsqlを書けるようにするライブラリ。
 
 
-<pre><code class"sql">
+<pre>
 create table m_address(
     row_id integer not null
   , zip_code char(7) not null
@@ -15,16 +15,16 @@ create table m_address(
   , modify_at timestamp not null default current timestamp
   , constraint m_address_pkc primary key (row_id)
 )
-</code><pre>
+<pre>
 
 のようなテーブルがあった時に
 
-<pre><code class="scala">
+<pre>
 val rows: List[M_Address] = M_Address
   .select
   .where(row_id >= 123 and town <> "fuga")
   .go(conn)
-</code><pre>
+<pre>
 
 このようににSELECTを書ける。
 
@@ -35,23 +35,23 @@ h5. samples
 
 +*select*+
 
-<pre><code class="scala">
+<pre>
 val rows: List[M_Address] = M_Address
   .select( row_id, zip_code, modify_at )
   .distinct
   .where( row_id >= 123 and (state ~ "hoge" or town <> "fuga") )
   .orderBy( modify_at.desc, zip_code.asc )
   .go(conn)
-</code><pre>
+<pre>
 
 このコードは
 
-<pre><code class="sql">
+<pre>
 select distinct row_id, zip_code, modify_at
 from m_address
 where ( row_id >= 123 and ( state like '%' || ? || '%' or town <> ?) )
 order by modift_at desc, zip_code asc
-</code><pre>
+<pre>
 
 のようなsqlでPreparedStatementを作り、
 
@@ -66,52 +66,52 @@ order by modift_at desc, zip_code asc
 
 +*update*+
 
-<pre><code class="scala">
+<pre>
 val mod_row_count = M_Address.update
   .set( row_id = None, modify_at = "2013-02-27 00:22:12" )
   .where( state == "piyo" )
   .go(conn)
-</code><pre>
+<pre>
 
 は
 
-<pre><code class="sql">
+<pre>
 update m_address
 set row_id = ?, modify_at = ?
 where ( state = ? )
 
 params = (null, Wed Feb 27 00:22:12 JST 2013, piyo)
-</code><pre>
+<pre>
 
 
 +*insert*+
 
-<pre><code class="scala">
+<pre>
 M_Address.insert.values( row_id = 123, state = "hoge", city = "fuga" ).go(conn)
-</code><pre>
+<pre>
 
 は
 
-<pre><code class="sql">
+<pre>
 insert into m_address (row_id, state, city) values (?, ?, ?)
 
 params = (123, hoge, fuga)
-</code><pre>
+<pre>
 
 
 +*delete*+
 
-<pre><code class="scala">
+<pre>
 M_Address.delete.where( row_id > 100 ).go(conn)
-</code><pre>
+<pre>
 
 は
 
-<pre><code class="sql">
+<pre>
 delete from m_address where ( row_id > ? )
 
 params = (100)
-</code><pre>
+<pre>
 
 
 ---
