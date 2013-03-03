@@ -1,8 +1,4 @@
----
-
-h2. scala sql library
-
----
+h3. scala sql library
 
 scalaコードの中でなるべく自然にsqlを書けるようにするライブラリ。
 
@@ -33,9 +29,8 @@ val rows: List[M_Address] = M_Address
 
 ---
 
-h4. samples
 
----
+h4. samples
 
 +*select*+
 
@@ -120,9 +115,8 @@ params = (100)
 
 ---
 
-h4. TODO
 
----
+h4. TODO
 
 * 各テーブルに対応するクラスをDataBaseMetaDataから読み取って自動生成する
 
