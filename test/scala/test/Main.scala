@@ -1,74 +1,111 @@
 package test
 
+import test.jdbc.DerbyDataSource
+import test.entity.M_Address
+import test.Utils._
 import java.util.Date
-import jdbc.DerbyDataSource
-import entity.M_Address
 
 object Main extends App {
-  
-  def using[A <: {def close(): Unit}, B](resource: A)(main: A => B): B = {
-    try { main(resource) } finally { resource.close() }
-  }
   
   using(DerbyDataSource.getConnection) { conn =>
     println(conn.getMetaData.getDatabaseProductName)
     
     import M_Address._
     
-    val rows: List[M_Address] = M_Address
-      .select( row_id, zip_code, modify_at )
-      .where( row_id >= 123 and (state ~ "hoge" or town <> "fuga") )
-      .distinct
-      .orderBy( modify_at.desc, zip_code.asc )
+    println("--------------------------------------------------")
+    
+    val del = M_Address.delete.go(conn)
+    
+    println(s"deleted $del records")
+    
+    println("--------------------------------------------------")
+    
+    val ins = M_Address.insert.values(
+        row_id = 1,
+        zip_code = "0030002",
+        state="hokkaido",
+        city="sapporo city",
+        town="higashi-sapporo"
+    ).go(conn)
+    
+    println(s"inserted $ins records")
+    
+    println("--------------------------------------------------")
+    
+    M_Address
+      .select.go(conn)
+      .each(println)
+      .whenEmpty(println("no record"))
+    
+    println("--------------------------------------------------")
+    
+    M_Address
+      .select(zip_code).go(conn)
+      .each(println)
+      .whenEmpty(println("no record"))
+    
+    println("--------------------------------------------------")
+    
+    M_Address
+      .select
+      .where(zip_code ~ "300")
       .go(conn)
-    // => select distinct row_id, zip_code, modify_at
-    //    from m_address
-    //    where ( row_id >= ? and ( state like ('%' || ? || '%') or town <> ? ) )
-    //    order by modify_at desc, zip_code asc
-    // List(123, hoge, fuga)
+      .each(println)
+      .whenEmpty(println("no record"))
     
-    M_Address.select.where( row_id == None and state ~ "hoge" or town <> "fuga" ).go(conn)
-    // => select * from m_address
-    //    where ( row_id is null and state like ('%' || ? || '%') or town <> ? )
-    // List(None, hoge, fuga)
+    println("--------------------------------------------------")
     
-    M_Address.select.go(conn)
-    // => select * from m_address
-    
-    M_Address.select(row_id).distinct.go(conn)
-    // => select distinct row_id from m_address
-    
-    M_Address.select.orderBy( row_id.asc ).go(conn)
-    // => select * from m_address order by row_id asc
-    
-    val mod_row_count = M_Address.update
-      .set( row_id = None, modify_at = "2013-02-27 00:22:12" )
-      .where( state == "piyo" )
+    M_Address
+      .select
+      .where(zip_code ~ "300" and row_id <> 1)
       .go(conn)
-    // => update m_address
-    //    set row_id = ?, modify_at = ?
-    //    where ( state = ? )
-    // List(null, Wed Feb 27 00:22:12 JST 2013, piyo)
+      .each(println)
+      .whenEmpty(println("no record"))
     
-    M_Address.update.set( row_id = None, modify_at = new Date ).go(conn)
-    // => update m_address set row_id = ?, modify_at = ?
-    // List(null, Wed Feb 27 00:52:39 JST 2013)
+    println("--------------------------------------------------")
     
-    M_Address.update.where( state == "piyo" ).go(conn)
-    // => update m_address where ( state = ? )
-    // List(piyo)
+    M_Address
+      .select
+      .where(modify_at < new Date)
+      .go(conn)
+      .each(println)
+      .whenEmpty(println("no record"))
     
-    M_Address.insert.values( row_id = 123, state = "hoge", city = "fuga" ).go(conn)
-    // => insert into m_address (row_id, state, city) values (?, ?, ?)
-    // List(123, hoge, fuga)
+    println("--------------------------------------------------")
     
-    M_Address.delete.where( row_id > 100 ).go(conn)
-    // => delete from m_address where ( row_id > ? )
-    // List(100)
+    M_Address
+      .select
+      .where(modify_at >= new Date)
+      .go(conn)
+      .each(println)
+      .whenEmpty(println("no record"))
     
-    M_Address.delete.go(conn)
-    // => delete from m_address
+    println("--------------------------------------------------")
     
+    M_Address
+      .select(state, city, town)
+      .orderBy(row_id.asc)
+      .go(conn)
+      .each(println)
+      .whenEmpty(println("no record"))
+    
+    println("--------------------------------------------------")
+    
+    val upd = M_Address
+      .update.set(city = "SapporoCity", modify_at = new Date)
+      .where(city == "sapporo city")
+      .go(conn)
+    
+    println(s"updated $ins records")
+    
+    println("--------------------------------------------------")
+    
+    M_Address
+      .select.go(conn)
+      .each(println)
+      .whenEmpty(println("no record"))
+    
+    println("--------------------------------------------------")
   }
   
 }

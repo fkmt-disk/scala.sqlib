@@ -1,4 +1,4 @@
-package entity
+package test.entity
 
 import java.util.Date
 
@@ -14,7 +14,7 @@ case class M_Address(
     modift_at: Date
 )
 
-object M_Address extends Entity {
+object M_Address extends Table {
   
   type T = M_Address
   
@@ -34,7 +34,7 @@ object M_Address extends Entity {
   
   def row_id = _row_id
   
-  def row_id_= (x: Option[Int]): SetClause[T] = set(_row_id, x.getOrElse(null))
+  def row_id_= (x: Option[Int]): SetClause[T] = set(_row_id, x.getInteger)
   
   def zip_code = _zip_code
   

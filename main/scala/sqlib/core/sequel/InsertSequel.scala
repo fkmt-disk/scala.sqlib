@@ -1,9 +1,21 @@
 package sqlib.core.sequel
 
 import java.sql.Connection
-import scala.collection.mutable.ListBuffer
-import sqlib.core._
 
+import scala.collection.mutable.ListBuffer
+import scala.reflect.ClassTag
+
+import org.apache.commons.dbutils.QueryRunner
+
+import sqlib.core.SetClause
+
+/**
+ * InsertSequel.
+ * 
+ * @param <T>
+ * 
+ * @author fkmt.disk@gmail.com
+ */
 final class InsertSequel[T] private[core] {
   
   private[this] var _values: List[SetClause[T]] = Nil
@@ -13,11 +25,13 @@ final class InsertSequel[T] private[core] {
     this
   }
   
-  def go(conn: Connection)(implicit manifest: ClassManifest[T]): Int = {
+  def go(conn: Connection)(implicit tag: ClassTag[T]): Int = {
+    import org.apache.commons.dbutils.QueryRunner
+    
     if (_values.isEmpty)
       throw new IllegalStateException("values is empty")
     
-    val klass: Class[_] = manifest.erasure
+    val klass = tag.runtimeClass
     
     val buff = new ListBuffer[String]
     
@@ -25,18 +39,19 @@ final class InsertSequel[T] private[core] {
     
     buff append klass.getSimpleName.toLowerCase
     
-    buff append ("(" +  _values.map(_.name).mkString(", ") + ")")
+    buff append s"(${_values.map(_.name).mkString(", ")})"
     
     buff append "values"
     
-    buff append ("(" +  ("?" * _values.length).toCharArray.mkString(", ") + ")")
+    buff append s"(${("?" * _values.length).toCharArray.mkString(", ")})"
     
     val sql = buff.mkString(" ")
     
-    printf("%s; %s%n", sql, _values.map(_.value))
-     
-    // TODO
-    -1
+    val values = _values.map(_.value)
+    
+    println(s"$sql; $values")
+    
+    new QueryRunner().update(conn, sql, values:_*)
   }
   
 }

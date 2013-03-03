@@ -1,8 +1,20 @@
 package sqlib.core.column
 
-import sqlib.core._
+import sqlib.core.Condition
+import sqlib.core.WhereClause
 
-final class TextColumn[T](name:String, ordinal: Int, sqltype: Int) extends Column[T](name, ordinal, sqltype) {
+/**
+ * TextColumn.
+ * 
+ * @param <T>
+ * 
+ * @author fkmt.disk@gmail.com
+ */
+final class TextColumn[T](
+    name:String,
+    ordinal: Int,
+    sqltype: Int
+) extends Column[T](name, ordinal, sqltype) {
   
   override protected def equalsImpl(x: Any) = x match {
     case None | _ if x == null =>

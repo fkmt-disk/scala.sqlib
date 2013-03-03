@@ -1,5 +1,10 @@
 package sqlib.core
 
+/**
+ * LogicalOperator.
+ * 
+ * @author fkmt.disk@gmail.com
+ */
 private[core] object LogicalOperator {
   
   object And extends LogicalOperator("and")

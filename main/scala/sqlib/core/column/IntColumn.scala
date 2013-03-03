@@ -1,10 +1,22 @@
 package sqlib.core.column
 
-import sqlib.core._
+import sqlib.core.Condition
+import sqlib.core.WhereClause
 
-final class IntColumn[T](name: String, ordinal: Int, sqltype: Int) extends Column[T](name, ordinal, sqltype) {
+/**
+ * IntColumn.
+ * 
+ * @param <T>
+ * 
+ * @author fkmt.disk@gmail.com
+ */
+final class IntColumn[T](
+    name: String,
+    ordinal: Int,
+    sqltype: Int
+) extends Column[T](name, ordinal, sqltype) {
   
-  private def toInteger(i: Int) = i.asInstanceOf[Integer]
+  private[this] def toInteger(i: Int) = i.asInstanceOf[Integer]
   
   override protected def equalsImpl(x: Any) = x match {
     case None | _ if x == null =>

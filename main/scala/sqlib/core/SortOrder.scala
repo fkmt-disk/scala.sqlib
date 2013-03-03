@@ -1,8 +1,15 @@
 package sqlib.core
 
-final class SortOrder[T] private[SortOrder](name: String, direction: String) {
+/**
+ * SortOrder.
+ * 
+ * @param <T>
+ * 
+ * @author fkmt.disk@gmail.com
+ */
+final class SortOrder[T] private(name: String, direction: String) {
   
-  val clause: String = "%s %s".format(name, direction)
+  val clause = s"$name $direction"
   
 }
 

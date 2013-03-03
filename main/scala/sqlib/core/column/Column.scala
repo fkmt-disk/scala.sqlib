@@ -2,7 +2,18 @@ package sqlib.core.column
 
 import sqlib.core.SortOrder
 
-abstract class Column[T] private[core](val name: String, val ordinal: Int, val sqltype: Int) {
+/**
+ * Column.
+ * 
+ * @param <T>
+ * 
+ * @author fkmt.disk@gmail.com
+ */
+abstract class Column[T] private[core](
+    val name: String,
+    val ordinal: Int,
+    val sqltype: Int
+) {
   
   protected def equalsImpl(x: Any): Unit
   

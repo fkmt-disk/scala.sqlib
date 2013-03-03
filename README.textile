@@ -1,0 +1,124 @@
+h3. scala sql library
+
+---
+
+scalaコードの中でなるべく自然にsqlを書けるようにするライブラリ。
+
+
+<pre><code class"sql">
+create table m_address(
+    row_id integer not null
+  , zip_code char(7) not null
+  , state varchar(128) not null
+  , city varchar(128) not null
+  , town varchar(128) not null
+  , modify_at timestamp not null default current timestamp
+  , constraint m_address_pkc primary key (row_id)
+)
+</code><pre>
+
+のようなテーブルがあった時に
+
+<pre><code class="scala">
+val rows: List[M_Address] = M_Address
+  .select
+  .where(row_id >= 123 and town <> "fuga")
+  .go(conn)
+</code><pre>
+
+このようににSELECTを書ける。
+
+---
+
+
+h5. samples
+
++*select*+
+
+<pre><code class="scala">
+val rows: List[M_Address] = M_Address
+  .select( row_id, zip_code, modify_at )
+  .distinct
+  .where( row_id >= 123 and (state ~ "hoge" or town <> "fuga") )
+  .orderBy( modify_at.desc, zip_code.asc )
+  .go(conn)
+</code><pre>
+
+このコードは
+
+<pre><code class="sql">
+select distinct row_id, zip_code, modify_at
+from m_address
+where ( row_id >= 123 and ( state like '%' || ? || '%' or town <> ?) )
+order by modift_at desc, zip_code asc
+</code><pre>
+
+のようなsqlでPreparedStatementを作り、
+
+(123, hoge, fuga)
+
+をセットして実行する。
+
+* @~@ はlike
+
+* @!=@ は使えない、 @<>@ のみ
+
+
++*update*+
+
+<pre><code class="scala">
+val mod_row_count = M_Address.update
+  .set( row_id = None, modify_at = "2013-02-27 00:22:12" )
+  .where( state == "piyo" )
+  .go(conn)
+</code><pre>
+
+は
+
+<pre><code class="sql">
+update m_address
+set row_id = ?, modify_at = ?
+where ( state = ? )
+
+params = (null, Wed Feb 27 00:22:12 JST 2013, piyo)
+</code><pre>
+
+
++*insert*+
+
+<pre><code class="scala">
+M_Address.insert.values( row_id = 123, state = "hoge", city = "fuga" ).go(conn)
+</code><pre>
+
+は
+
+<pre><code class="sql">
+insert into m_address (row_id, state, city) values (?, ?, ?)
+
+params = (123, hoge, fuga)
+</code><pre>
+
+
++*delete*+
+
+<pre><code class="scala">
+M_Address.delete.where( row_id > 100 ).go(conn)
+</code><pre>
+
+は
+
+<pre><code class="sql">
+delete from m_address where ( row_id > ? )
+
+params = (100)
+</code><pre>
+
+
+---
+
+h5. TODO
+
+* 各テーブルに対応するクラスをDataBaseMetaDataから読み取って自動生成する
+
+* テストにScalaTest使ってみる
+

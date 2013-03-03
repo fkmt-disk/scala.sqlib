@@ -43,7 +43,8 @@
     <sequential>
       <delete dir="@{outdir}" />
       <mkdir dir="@{outdir}" />
-      <fsc srcdir="@{srcdir}" destdir="@{outdir}" classpathref="@{cpref}" failonerror="false" />
+      <!--fsc srcdir="@{srcdir}" destdir="@{outdir}" classpathref="@{cpref}" failonerror="false" /-->
+      <scalac srcdir="@{srcdir}" destdir="@{outdir}" classpathref="@{cpref}" failonerror="false" deprecation="true" addparams="-feature" />
     </sequential>
   </macrodef>
   
@@ -55,19 +56,19 @@
     <ivy:retrieve />
   </target>
   
-  <target name="_compile_main" depends="init">
+  <target name="compile_main" depends="init">
     <compile srcdir="${main_dir}/scala" outdir="${main_dir}/classes" cpref="base_classpath" />
   </target>
   
-  <target name="_compile_test" depends="_compile_main">
+  <target name="compile_test" depends="compile_main">
     <compile srcdir="${test_dir}/scala" outdir="${test_dir}/classes" cpref="main_classpath" />
   </target>
   
-  <target name="test" depends="_compile_test">
+  <target name="test" depends="compile_test">
     <java classname="test.Main" classpathref="test_classpath" />
   </target>
   
-  <target name="build" depends="_compile_main">
+  <target name="build" depends="compile_main">
     <delete file="${build_dir}/${jar_name}" />
     <jar destfile="${build_dir}/${jar_name}" basedir="${main_dir}/classes" includes="**/*.class" />
   </target>

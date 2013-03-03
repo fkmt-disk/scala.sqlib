@@ -4,7 +4,18 @@ import java.util.Date
 
 import sqlib.core._
 
-final class DateColumn[T](name: String, ordinal: Int, sqltype: Int) extends Column[T](name, ordinal, sqltype) {
+/**
+ * DateColumn.
+ * 
+ * @param <T>
+ * 
+ * @author fkmt.disk@gmail.com
+ */
+final class DateColumn[T](
+    name: String,
+    ordinal: Int,
+    sqltype: Int
+) extends Column[T](name, ordinal, sqltype) {
   
   override protected def equalsImpl(x: Any) = x match {
     case None | _ if x == null =>

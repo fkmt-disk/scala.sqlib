@@ -1,5 +1,10 @@
 package sqlib.core
 
+/**
+ * Bracket.
+ * 
+ * @author fkmt.disk@gmail.com
+ */
 private[core] object Bracket {
   
   object begin extends Bracket("(")

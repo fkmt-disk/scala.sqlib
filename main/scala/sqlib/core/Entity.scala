@@ -1,29 +1,33 @@
 package sqlib.core
 
-import sqlib.core._
-import sqlib.core.column._
-import sqlib.core.sequel._
+import sqlib.core.column.Column
 
-abstract class Entity {
+/**
+ * Entity.
+ * 
+ * @author fkmt.disk@gmail.com
+ */
+abstract class Entity private[core] {
   
   type T
   
-  def select: SelectSequel[T] = new SelectSequel
+  protected def set(column: Column[T], x: AnyRef): SetClause[T] = SetClause(column.name, x)
   
-  def select(columns: Column[T]*): SelectSequel[T] = new SelectSequel(columns:_*)
-  
-  def update: UpdateSequel[T] = new UpdateSequel
-  
-  def insert: InsertSequel[T] = new InsertSequel
-  
-  def delete: DeleteSequel[T] = new DeleteSequel
-  
-  protected def set(column: Column[T], x: Any): SetClause[T] = SetClause(column.name, x)
+  import scala.language.implicitConversions
   
   implicit final def bool2column(x: Boolean): WhereClause[T] = Utils.bool2column(x)
   
   implicit final def str2date(x: String): java.util.Date = Utils.str2date(x)
   
   implicit final def int2opt(x: Int): Option[Int] = Utils.int2opt(x)
+  
+  implicit final def int2integer(x: Int): Integer = Utils.int2integer(x)
+  
+  implicit final class IntegerOption(opt: Option[Int]) {
+    def getInteger: Integer = opt match {
+      case None => null
+      case Some(i) => i.asInstanceOf[Integer]
+    }
+  }
   
 }

@@ -6,7 +6,15 @@ import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 import sqlib.core.column.Column
 
-private[sqlib] class CaseClassResultSetHandler[T] (implicit val tag: ClassTag[T]) extends ResultSetHandler[List[T]] {
+/**
+ * CaseClassResultSetHandler.
+ * 
+ * @param <T>
+ * 
+ * @author fkmt.disk@gmail.com
+ */
+private[sqlib] class CaseClassResultSetHandler[T] (implicit val tag: ClassTag[T])
+    extends ResultSetHandler[List[T]] {
   
   import CaseClassResultSetHandler._
   

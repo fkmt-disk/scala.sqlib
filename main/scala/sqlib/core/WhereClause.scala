@@ -3,6 +3,13 @@ package sqlib.core
 import collection.mutable.ListBuffer
 import annotation.tailrec
 
+/**
+ * WhereClause.
+ * 
+ * @param <T>
+ * 
+ * @author fkmt.disk@gmail.com
+ */
 final class WhereClause[T] private[core] {
   
   private[core] val buffer = new ListBuffer[AnyRef]
@@ -29,7 +36,7 @@ final class WhereClause[T] private[core] {
         params append x.value
         x.clause
       case oth =>
-        sys.error("unknown clause type: %s" format oth)
+        sys.error(s"unknown clause type: ${oth}")
     }
     (sql.mkString(" "), params.toList)
   }
@@ -54,7 +61,7 @@ final class WhereClause[T] private[core] {
         buffer.last.append(Bracket.term)
         buffer.flatten
       case _ =>
-        sys.error("sort failed: buffer=%s, list=%s" format (buffer, list))
+        sys.error(s"sort failed: buffer=${buffer}, list=${list}")
     }
   }
   

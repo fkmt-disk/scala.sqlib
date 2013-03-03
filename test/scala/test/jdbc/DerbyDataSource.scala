@@ -1,4 +1,4 @@
-package jdbc
+package test.jdbc
 
 import java.io.File
 import java.sql.Connection
@@ -6,11 +6,9 @@ import java.sql.DriverManager
 
 import org.apache.derby.jdbc.EmbeddedDataSource
 
+import test.Utils._
+
 object DerbyDataSource {
-  
-  def using[A <: {def close(): Unit}, B](resource: A)(main: A => B): B = {
-    try { main(resource) } finally { resource.close() }
-  }
   
   Runtime.getRuntime.addShutdownHook(new Thread() {
     override def run() {

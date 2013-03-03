@@ -1,12 +1,24 @@
 package sqlib.core.sequel
 
 import java.sql.Connection
-import sqlib.core._
-import scala.collection.mutable.ListBuffer
 
+import scala.collection.mutable.ListBuffer
+import scala.reflect.ClassTag
+
+import org.apache.commons.dbutils.QueryRunner
+
+import sqlib.core.WhereClause
+
+/**
+ * DeleteSequel.
+ * 
+ * @param <T>
+ * 
+ * @author fkmt.disk@gmail.com
+ */
 final class DeleteSequel[T] private[core] {
   
-  private[this] var _where: (String, List[Any]) = null
+  private[this] var _where: (String, List[AnyRef]) = null
   
   def where(where: => WhereClause[T]): DeleteSequel[T] = {
     WhereClause.clear
@@ -14,28 +26,30 @@ final class DeleteSequel[T] private[core] {
     this
   }
   
-  def go(conn: Connection)(implicit manifest: ClassManifest[T]): Int = {
-    val klass: Class[_] = manifest.erasure
+  def go(conn: Connection)(implicit tag: ClassTag[T]): Int = {
+    import org.apache.commons.dbutils.QueryRunner
+    
+    val klass = tag.runtimeClass
     
     val buff = new ListBuffer[String]
     
-    buff append "delete from"
-    
-    buff append klass.getSimpleName.toLowerCase
+    buff append s"delete from ${klass.getSimpleName.toLowerCase}"
     
     if (_where != null)
-      buff append ("where " + _where._1)
+      buff append s"where ${_where._1}"
     
     val sql = buff.mkString(" ")
     
+    val runner = new QueryRunner
+    
     _where match {
-      case x if x == null => println(sql)
-      case _ => printf("%s; %s%n", sql, _where._2)
+      case x if x == null =>
+        println(sql)
+        runner.update(conn, sql)
+      case _ =>
+        println("$sql; ${_where._2}")
+        runner.update(conn, sql, _where._2:_*)
     }
-    
-    // TODO
-    
-    -1
   }
   
 }

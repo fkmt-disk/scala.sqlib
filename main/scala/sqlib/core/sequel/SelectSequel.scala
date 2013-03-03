@@ -1,14 +1,24 @@
 package sqlib.core.sequel
 
 import java.sql.Connection
-import sqlib.core._
-import sqlib.core.column._
+
 import scala.collection.mutable.ListBuffer
-import scala.reflect._
+import scala.reflect.ClassTag
+
 import org.apache.commons.dbutils.QueryRunner
-import sqlib.dbutils.CaseClassResultSetHandler
+
+import sqlib.core.SortOrder
+import sqlib.core.WhereClause
+import sqlib.core.column.Column
 import sqlib.dbutils.CaseClassResultSetHandler
 
+/**
+ * SelectSequel.
+ * 
+ * @param <T>
+ * 
+ * @author fkmt.disk@gmail.com
+ */
 final class SelectSequel[T] private[core](columns: Column[T]*) {
   
   private[this] var _columns: List[Column[T]] = columns.toList

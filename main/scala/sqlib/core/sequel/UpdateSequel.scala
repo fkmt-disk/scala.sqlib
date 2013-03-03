@@ -1,14 +1,27 @@
 package sqlib.core.sequel
 
 import java.sql.Connection
-import sqlib.core._
-import scala.collection.mutable.ListBuffer
 
+import scala.collection.mutable.ListBuffer
+import scala.reflect.ClassTag
+
+import org.apache.commons.dbutils.QueryRunner
+
+import sqlib.core.SetClause
+import sqlib.core.WhereClause
+
+/**
+ * UpdateSequel.
+ * 
+ * @param <T>
+ * 
+ * @author fkmt.disk@gmail.com
+ */
 final class UpdateSequel[T] private[core] {
   
   private[this] var _set: List[SetClause[T]] = Nil
   
-  private[this] var _where: (String, List[Any]) = null
+  private[this] var _where: (String, List[AnyRef]) = null
   
   def set(clause: SetClause[T]*): UpdateSequel[T] = {
     _set = clause.toList
@@ -21,20 +34,20 @@ final class UpdateSequel[T] private[core] {
     this
   }
   
-  def go(conn: Connection)(implicit manifest: ClassManifest[T]): Int = {
-    val klass: Class[_] = manifest.erasure
+  def go(conn: Connection)(implicit tag: ClassTag[T]): Int = {
+    import org.apache.commons.dbutils.QueryRunner
+    
+    val klass = tag.runtimeClass
     
     val buff = new ListBuffer[String]
     
-    buff append "update"
-    
-    buff append klass.getSimpleName.toLowerCase
+    buff append s"update ${klass.getSimpleName.toLowerCase}"
     
     if (_set.isEmpty == false)
-      buff append ("set " +  _set.map( x => "%s = ?".format(x.name) ).mkString(", "))
+      buff append s"set ${_set.map( x => "%s = ?".format(x.name) ).mkString(", ")}"
     
     if (_where != null)
-      buff append ("where " + _where._1)
+      buff append s"where ${_where._1}"
     
     val sql = buff.mkString(" ")
     
@@ -43,11 +56,9 @@ final class UpdateSequel[T] private[core] {
       case _ => _set.map(_.value) ++ _where._2
     }
     
-    printf("%s; %s%n", sql, values)
+    println(s"$sql; ${values}")
     
-    // TODO
-    
-    -1
+    new QueryRunner().update(conn, sql, values:_*)
   }
   
 }
