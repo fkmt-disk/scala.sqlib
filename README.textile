@@ -1,4 +1,6 @@
-h3. scala sql library
+---
+
+h2. scala sql library
 
 ---
 
@@ -28,10 +30,12 @@ val rows: List[M_Address] = M_Address
 
 このようににSELECTを書ける。
 
+
 ---
 
+h4. samples
 
-h5. samples
+---
 
 +*select*+
 
@@ -55,7 +59,7 @@ order by modift_at desc, zip_code asc
 
 のようなsqlでPreparedStatementを作り、
 
-(123, hoge, fuga)
+@(123, hoge, fuga)@
 
 をセットして実行する。
 
@@ -73,7 +77,7 @@ val mod_row_count = M_Address.update
   .go(conn)
 </pre>
 
-は
+↓
 
 <pre>
 update m_address
@@ -90,7 +94,7 @@ params = (null, Wed Feb 27 00:22:12 JST 2013, piyo)
 M_Address.insert.values( row_id = 123, state = "hoge", city = "fuga" ).go(conn)
 </pre>
 
-は
+↓
 
 <pre>
 insert into m_address (row_id, state, city) values (?, ?, ?)
@@ -105,7 +109,7 @@ params = (123, hoge, fuga)
 M_Address.delete.where( row_id > 100 ).go(conn)
 </pre>
 
-は
+↓
 
 <pre>
 delete from m_address where ( row_id > ? )
@@ -116,7 +120,9 @@ params = (100)
 
 ---
 
-h5. TODO
+h4. TODO
+
+---
 
 * 各テーブルに対応するクラスをDataBaseMetaDataから読み取って自動生成する
 
