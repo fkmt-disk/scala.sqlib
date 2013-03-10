@@ -14,15 +14,15 @@ final class IntColumn[T](
     name: String,
     ordinal: Int,
     sqltype: Int
-) extends Column[T](name, ordinal, sqltype) {
+) extends Column[T](name, ordinal, sqltype) with Compare[T] {
   
-  private[this] def toInteger(i: Int) = i.asInstanceOf[Integer]
+  type V = Int
   
   override protected def equalsImpl(x: Any) = x match {
-    case None | _ if x == null =>
+    case x if x == null || x == None =>
       WhereClause.get.buffer += Condition(s"$name is null", null)
     case x: Int =>
-      WhereClause.get.buffer += Condition(s"$name = ?", toInteger(x))
+      WhereClause.get.buffer += Condition(s"$name = ?", x.asAnyRef)
     case _ =>
       throw new IllegalArgumentException(String valueOf x)
   }
@@ -34,34 +34,10 @@ final class IntColumn[T](
       clause
     case x: Int =>
       val clause: WhereClause[T] = WhereClause.get
-      clause.buffer += Condition(s"$name <> ?", toInteger(x))
+      clause.buffer += Condition(s"$name <> ?", x.asAnyRef)
       clause
     case _ =>
       throw new IllegalArgumentException(String valueOf x)
-  }
-  
-  def <(x: Int): WhereClause[T] = {
-    val clause: WhereClause[T] = WhereClause.get
-    clause.buffer += Condition(s"$name < ?", toInteger(x))
-    clause
-  }
-  
-  def <=(x: Int): WhereClause[T] = {
-    val clause: WhereClause[T] = WhereClause.get
-    clause.buffer += Condition(s"$name <= ?", toInteger(x))
-    clause
-  }
-  
-  def >(x: Int): WhereClause[T] = {
-    val clause: WhereClause[T] = WhereClause.get
-    clause.buffer += Condition(s"$name > ?", toInteger(x))
-    clause
-  }
-  
-  def >=(x: Int): WhereClause[T] = {
-    val clause: WhereClause[T] = WhereClause.get
-    clause.buffer += Condition(s"$name >= ?", toInteger(x))
-    clause
   }
   
 }

@@ -9,12 +9,6 @@ import java.text.{SimpleDateFormat => SDF}
  */
 private[core] object Utils {
   
-  def bool2column[T](x: Boolean): WhereClause[T] = {
-    if (x)
-      throw new UnsupportedOperationException("`!=` is unsupported; must be use `<>`")
-    WhereClause.get
-  }
-  
   private[this] val yyyyMMdd = raw"(\d{4}-\d{2}-\d{2})".r
   private[this] val yyyyMMdd_HHmmss = raw"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})".r
   private[this] val yyyyMMdd_HHmmss_SSS = raw"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})".r
@@ -25,9 +19,5 @@ private[core] object Utils {
     case yyyyMMdd_HHmmss_SSS(x) => new SDF("yyyy-MM-dd HH:mm:ss.SSS").parse(x)
     case _ => throw new IllegalArgumentException(x)
   }
-  
-  def int2opt(x: Int): Option[Int] = Some(x)
-  
-  def int2integer(x: Int): Integer = x.asInstanceOf[Integer]
   
 }

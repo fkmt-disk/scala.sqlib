@@ -1,13 +1,13 @@
 package test
 
-import test.jdbc.DerbyDataSource
+import test.jdbc.DerbyConnectionFactory
 import test.entity.M_Address
 import test.Utils._
 import java.util.Date
 
 object Main extends App {
   
-  using(DerbyDataSource.getConnection) { conn =>
+  using(DerbyConnectionFactory.getConnection) { conn =>
     println(conn.getMetaData.getDatabaseProductName)
     
     import M_Address._

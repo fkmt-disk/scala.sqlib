@@ -33,7 +33,8 @@ final class WhereClause[T] private[core] {
       case x: LogicalOperator =>
         x.toString
       case x: Condition =>
-        params append x.value
+        if (x.value != null)
+          params append x.value
         x.clause
       case oth =>
         sys.error(s"unknown clause type: ${oth}")

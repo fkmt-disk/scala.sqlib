@@ -1,13 +1,13 @@
 package test
 
 import java.util.Date
-import test.jdbc.DerbyDataSource
+import test.jdbc.DerbyConnectionFactory
 import test.entity.M_Address
 import test.Utils._
 
 object Sample extends App {
   
-  using(DerbyDataSource.getConnection) { conn =>
+  using(DerbyConnectionFactory.getConnection) { conn =>
     println(conn.getMetaData.getDatabaseProductName)
     
     import M_Address._
@@ -39,7 +39,7 @@ object Sample extends App {
     // => select * from m_address order by row_id asc
     
     val mod_row_count = M_Address.update
-      .set( row_id = None, modify_at = "2013-02-27 00:22:12" )
+      .set( row_id = null, modify_at = "2013-02-27 00:22:12" )
       .where( state == "piyo" )
       .go(conn)
     // => update m_address
@@ -47,7 +47,7 @@ object Sample extends App {
     //    where ( state = ? )
     // List(null, Wed Feb 27 00:22:12 JST 2013, piyo)
     
-    M_Address.update.set( row_id = None, modify_at = new Date ).go(conn)
+    M_Address.update.set( row_id = null, modify_at = new Date ).go(conn)
     // => update m_address set row_id = ?, modify_at = ?
     // List(null, Wed Feb 27 00:52:39 JST 2013)
     

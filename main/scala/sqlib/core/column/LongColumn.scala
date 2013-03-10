@@ -1,31 +1,30 @@
 package sqlib.core.column
 
-import java.util.Date
-
-import sqlib.core._
+import sqlib.core.Condition
+import sqlib.core.WhereClause
 
 /**
- * DateColumn.
+ * LongColumn.
  * 
  * @param <T>
  * 
  * @author fkmt.disk@gmail.com
  */
-final class DateColumn[T](
+final class LongColumn[T](
     name: String,
     ordinal: Int,
     sqltype: Int
 ) extends Column[T](name, ordinal, sqltype) with Compare[T] {
   
-  type V = java.util.Date
+  type V = Long
   
   override protected def equalsImpl(x: Any) = x match {
     case None | _ if x == null =>
       WhereClause.get.buffer += Condition(s"$name is null", null)
-    case x: Date =>
-      WhereClause.get.buffer += Condition(s"$name = ?", x)
-    case x: String =>
-      equalsImpl(Utils str2date x)
+    case x: Long =>
+      WhereClause.get.buffer += Condition(s"$name = ?", x.asAnyRef)
+    case x: Int =>
+      equalsImpl(x.asInstanceOf[Long])
     case _ =>
       throw new IllegalArgumentException(String valueOf x)
   }
@@ -35,12 +34,12 @@ final class DateColumn[T](
       val clause: WhereClause[T] = WhereClause.get
       clause.buffer += Condition(s"$name is not null", null)
       clause
-    case x: Date =>
+    case x: Long =>
       val clause: WhereClause[T] = WhereClause.get
-      clause.buffer += Condition(s"$name <> ?", x)
+      clause.buffer += Condition(s"$name <> ?", x.asAnyRef)
       clause
-    case x: String =>
-      <>(Utils str2date x)
+    case x: Int =>
+      <>(x.asInstanceOf[Long])
     case _ =>
       throw new IllegalArgumentException(String valueOf x)
   }

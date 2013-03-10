@@ -45,6 +45,9 @@
       <mkdir dir="@{outdir}" />
       <!--fsc srcdir="@{srcdir}" destdir="@{outdir}" classpathref="@{cpref}" failonerror="false" /-->
       <scalac srcdir="@{srcdir}" destdir="@{outdir}" classpathref="@{cpref}" failonerror="false" deprecation="true" addparams="-feature" />
+      <copy toDir="@{outdir}">
+        <fileset dir="@{srcdir}" includes="**/*" excludes="**/*.scala" />
+      </copy>
     </sequential>
   </macrodef>
   

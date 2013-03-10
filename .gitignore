@@ -6,3 +6,4 @@ test/sample.db/
 .ant-targets-build.xml
 .cache
 derby.log
+velocity.log

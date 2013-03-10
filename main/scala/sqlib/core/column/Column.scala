@@ -1,6 +1,7 @@
 package sqlib.core.column
 
 import sqlib.core.SortOrder
+import sqlib.core.AsAnyRef
 
 /**
  * Column.
@@ -13,7 +14,7 @@ abstract class Column[T] private[core](
     val name: String,
     val ordinal: Int,
     val sqltype: Int
-) {
+) extends AsAnyRef {
   
   protected def equalsImpl(x: Any): Unit
   

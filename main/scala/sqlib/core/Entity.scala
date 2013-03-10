@@ -7,7 +7,7 @@ import sqlib.core.column.Column
  * 
  * @author fkmt.disk@gmail.com
  */
-abstract class Entity private[core] {
+abstract class Entity private[core] extends AsAnyRef {
   
   type T
   
@@ -15,19 +15,14 @@ abstract class Entity private[core] {
   
   import scala.language.implicitConversions
   
-  implicit final def bool2column(x: Boolean): WhereClause[T] = Utils.bool2column(x)
+  implicit final def bool2column(x: Boolean): WhereClause[T] = {
+    if (x)
+      throw new UnsupportedOperationException("`!=` is unsupported; must be use `<>`")
+    WhereClause.get
+  }
   
   implicit final def str2date(x: String): java.util.Date = Utils.str2date(x)
   
-  implicit final def int2opt(x: Int): Option[Int] = Utils.int2opt(x)
-  
-  implicit final def int2integer(x: Int): Integer = Utils.int2integer(x)
-  
-  implicit final class IntegerOption(opt: Option[Int]) {
-    def getInteger: Integer = opt match {
-      case None => null
-      case Some(i) => i.asInstanceOf[Integer]
-    }
-  }
+  implicit final def asAnyRef(x: AnyVal) = x.asAnyRef
   
 }

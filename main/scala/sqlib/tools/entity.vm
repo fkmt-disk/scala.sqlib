@@ -1,0 +1,32 @@
+package ${pkg}
+
+/**
+ * ${table.tableClassName}.
+ * 
+ * @since ${since}
+ */
+case class ${table.tableClassName}(
+#foreach($col in $table.columns)
+#if($velocityCount == $table.columns.size()) #set($comma = "") #else #set($comma = ",") #end
+   ${col.columnName}: ${col.sqlType.javaType.name}${comma}
+#end
+)
+
+object ${table.tableClassName} extends ${table.superType.name} {
+  
+  type T = ${table.tableClassName}
+  
+  import java.sql.Types._
+  import sqlib.core._
+  import column._
+  
+#foreach($col in $table.columns)
+  private[this] val _${col.columnName} = new ${col.sqlType.columnType.simpleName}[T]("${col.columnName}", ${col.ordinalPosition}, ${col.sqlType.typeName})
+#end
+  
+#foreach($col in $table.columns)
+  def ${col.columnName} = _${col.columnName}
+  def ${col.columnName}_= (x: ${col.sqlType.javaType.name}): SetClause[T] = set(_${col.columnName}, x)
+  
+#end
+}

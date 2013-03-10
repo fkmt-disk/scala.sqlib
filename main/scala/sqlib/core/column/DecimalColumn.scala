@@ -1,31 +1,36 @@
 package sqlib.core.column
 
-import java.util.Date
-
-import sqlib.core._
+import sqlib.core.Condition
+import sqlib.core.WhereClause
 
 /**
- * DateColumn.
+ * DecimalColumn.
  * 
  * @param <T>
  * 
  * @author fkmt.disk@gmail.com
  */
-final class DateColumn[T](
+final class DecimalColumn[T](
     name: String,
     ordinal: Int,
     sqltype: Int
 ) extends Column[T](name, ordinal, sqltype) with Compare[T] {
   
-  type V = java.util.Date
+  type V = BigDecimal
   
   override protected def equalsImpl(x: Any) = x match {
     case None | _ if x == null =>
       WhereClause.get.buffer += Condition(s"$name is null", null)
-    case x: Date =>
-      WhereClause.get.buffer += Condition(s"$name = ?", x)
-    case x: String =>
-      equalsImpl(Utils str2date x)
+    case x: BigDecimal =>
+      WhereClause.get.buffer += Condition(s"$name = ?", x.asAnyRef)
+    case x: Int =>
+      equalsImpl(BigDecimal(x))
+    case x: Long =>
+      equalsImpl(BigDecimal(x))
+    case x: Float =>
+      equalsImpl(BigDecimal(x))
+    case x: Double =>
+      equalsImpl(BigDecimal(x))
     case _ =>
       throw new IllegalArgumentException(String valueOf x)
   }
@@ -35,12 +40,18 @@ final class DateColumn[T](
       val clause: WhereClause[T] = WhereClause.get
       clause.buffer += Condition(s"$name is not null", null)
       clause
-    case x: Date =>
+    case x: BigDecimal =>
       val clause: WhereClause[T] = WhereClause.get
-      clause.buffer += Condition(s"$name <> ?", x)
+      clause.buffer += Condition(s"$name <> ?", x.asAnyRef)
       clause
-    case x: String =>
-      <>(Utils str2date x)
+    case x: Int =>
+      <>(BigDecimal(x))
+    case x: Long =>
+      <>(BigDecimal(x))
+    case x: Float =>
+      <>(BigDecimal(x))
+    case x: Double =>
+      <>(BigDecimal(x))
     case _ =>
       throw new IllegalArgumentException(String valueOf x)
   }
