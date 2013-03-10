@@ -3,7 +3,7 @@ package test.entity
 /**
  * M_Address.
  * 
- * @since 2013-03-10 15:42:26
+ * @since 2013-03-10 16:37:42
  */
 case class M_Address(
     row_id: java.lang.Integer,

@@ -30,6 +30,8 @@ private[tools] class SqlType(sqlType: Int) {
     case t if t == DATE         => "DATE"
     case t if t == TIME         => "TIME"
     case t if t == TIMESTAMP    => "TIMESTAMP"
+    case x =>
+      sys.error(s"unsupported sql types: $x")
   }
   
   @BeanProperty

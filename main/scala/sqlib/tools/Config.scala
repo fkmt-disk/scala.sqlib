@@ -54,9 +54,6 @@ object Config {
   
   val package_name = conf.get("package_name")
   
-  val clean = conf.get("clean") match {
-    case Some(x) => x.toBoolean
-    case None => false
-  }
+  val clean = conf.get("clean").getOrElse(false.toString).toBoolean
   
 }

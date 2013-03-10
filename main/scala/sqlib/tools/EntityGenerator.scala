@@ -99,15 +99,6 @@ object EntityGenerator {
     dir.listFiles(dir_filter).foldLeft(ret)(_ && rmdirs(_)) && dir.delete
   }
   
-  private val props = {
-    import java.util.Properties
-    import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
-    val props = new Properties
-    props.setProperty("resource.loader", "CP")
-    props.setProperty("CP.resource.loader.class", classOf[ClasspathResourceLoader].getName)
-    props
-  }
-  
   private val tempalte = {
     import java.util.Properties
     import org.apache.velocity.app.Velocity
