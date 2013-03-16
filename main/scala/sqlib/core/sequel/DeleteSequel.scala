@@ -7,6 +7,7 @@ import scala.reflect.ClassTag
 
 import org.apache.commons.dbutils.QueryRunner
 
+import sqlib.core.EntityInfo
 import sqlib.core.WhereClause
 
 /**
@@ -33,7 +34,7 @@ final class DeleteSequel[T] private[core] {
     
     val buff = new ListBuffer[String]
     
-    buff append s"delete from ${klass.getSimpleName.toLowerCase}"
+    buff append s"delete from ${klass.getAnnotation(classOf[EntityInfo]).name}"
     
     if (_where != null)
       buff append s"where ${_where._1}"

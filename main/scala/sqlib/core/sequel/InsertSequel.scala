@@ -7,6 +7,7 @@ import scala.reflect.ClassTag
 
 import org.apache.commons.dbutils.QueryRunner
 
+import sqlib.core.EntityInfo
 import sqlib.core.SetClause
 
 /**
@@ -37,7 +38,7 @@ final class InsertSequel[T] private[core] {
     
     buff append "insert into"
     
-    buff append klass.getSimpleName.toLowerCase
+    buff append klass.getAnnotation(classOf[EntityInfo]).name
     
     buff append s"(${_values.map(_.name).mkString(", ")})"
     

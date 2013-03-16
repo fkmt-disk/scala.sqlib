@@ -75,7 +75,8 @@ object EntityGenerator {
           col.columnName = col.columnName.toLowerCase
         }
         
-        table.tableClassName = capitalize(table.tableName.toLowerCase)
+        table.tableName = table.tableName.toLowerCase
+        table.tableClassName = capitalize(table.tableName)
         table.superType = table.tableType.toLowerCase match {
           case "view"   => classOf[View]
           case "table"  => classOf[Table]

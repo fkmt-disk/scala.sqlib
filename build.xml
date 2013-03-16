@@ -19,34 +19,27 @@
     <fileset dir="${env.SCALA_HOME}/lib" includes="*.jar" />
   </path>
   
-  <path id="base_classpath">
+  <path id="build_classpath">
     <path refid="scala_lib" />
     <fileset dir="${basedir}/lib" includes="*.jar" />
-  </path>
-  
-  <path id="main_classpath">
-    <path refid="base_classpath" />
     <pathelement location="${main_dir}/classes" />
-  </path>
-  
-  <path id="test_classpath">
-    <path refid="main_classpath" />
     <pathelement location="${test_dir}/classes" />
   </path>
   
   <taskdef resource="scala/tools/ant/antlib.xml" classpathref="scala_lib" />
   
   <macrodef name="compile">
-    <attribute name="srcdir" />
-    <attribute name="outdir" />
+    <attribute name="rootdir" />
     <attribute name="cpref" />
     <sequential>
-      <delete dir="@{outdir}" />
-      <mkdir dir="@{outdir}" />
-      <!--fsc srcdir="@{srcdir}" destdir="@{outdir}" classpathref="@{cpref}" failonerror="false" /-->
-      <scalac srcdir="@{srcdir}" destdir="@{outdir}" classpathref="@{cpref}" failonerror="false" deprecation="true" addparams="-feature" />
-      <copy toDir="@{outdir}">
-        <fileset dir="@{srcdir}" includes="**/*" excludes="**/*.scala" />
+      <delete dir="@{rootdir}/classes" />
+      <mkdir dir="@{rootdir}/classes" />
+      <javac  srcdir="@{rootdir}/java"  destdir="@{rootdir}/classes" classpathref="@{cpref}" includeantruntime="false" />
+      <scalac srcdir="@{rootdir}/scala" destdir="@{rootdir}/classes" classpathref="@{cpref}" failonerror="false" deprecation="true" addparams="-feature" />
+      <!--fsc srcdir="@{rootdir}/scala" destdir="@{rootdir}/classes" classpathref="@{cpref}" failonerror="false" /-->
+      <copy toDir="@{rootdir}/classes">
+        <fileset dir="@{rootdir}/java"  includes="**/*" excludes="**/*.java"  />
+        <fileset dir="@{rootdir}/scala" includes="**/*" excludes="**/*.scala" />
       </copy>
     </sequential>
   </macrodef>
@@ -60,20 +53,20 @@
   </target>
   
   <target name="compile_main" depends="init">
-    <compile srcdir="${main_dir}/scala" outdir="${main_dir}/classes" cpref="base_classpath" />
+    <compile rootdir="${main_dir}" cpref="build_classpath" />
   </target>
   
   <target name="compile_test" depends="compile_main">
-    <compile srcdir="${test_dir}/scala" outdir="${test_dir}/classes" cpref="main_classpath" />
+    <compile rootdir="${test_dir}" cpref="build_classpath" />
   </target>
   
   <target name="test" depends="compile_test">
-    <java classname="test.Main" classpathref="test_classpath" />
+    <java classname="test.Main" classpathref="build_classpath" />
   </target>
   
   <target name="build" depends="compile_main">
     <delete file="${build_dir}/${jar_name}" />
-    <jar destfile="${build_dir}/${jar_name}" basedir="${main_dir}/classes" includes="**/*.class" />
+    <jar destfile="${build_dir}/${jar_name}" basedir="${main_dir}/classes" includes="**/*" />
   </target>
   
 </project>

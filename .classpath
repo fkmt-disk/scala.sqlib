@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="main/classes" path="main/scala"/>
+	<classpathentry kind="src" output="main/classes" path="main/java"/>
 	<classpathentry kind="src" output="test/classes" path="test/scala"/>
 	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

@@ -3,20 +3,11 @@ package test.entity
 /**
  * M_Address.
  * 
- * @since 2013-03-10 16:37:42
+ * @since 2013-03-16 19:51:10
  */
-case class M_Address(
-    row_id: java.lang.Integer,
-    zip_code: java.lang.String,
-    state: java.lang.String,
-    city: java.lang.String,
-    town: java.lang.String,
-    modify_at: java.util.Date
-)
-
 object M_Address extends sqlib.core.Table {
   
-  type T = M_Address
+  type T = M_Address.Row
   
   import java.sql.Types._
   import sqlib.core._
@@ -31,20 +22,25 @@ object M_Address extends sqlib.core.Table {
   
   def row_id = _row_id
   def row_id_= (x: java.lang.Integer): SetClause[T] = set(_row_id, x)
-  
   def zip_code = _zip_code
   def zip_code_= (x: java.lang.String): SetClause[T] = set(_zip_code, x)
-  
   def state = _state
   def state_= (x: java.lang.String): SetClause[T] = set(_state, x)
-  
   def city = _city
   def city_= (x: java.lang.String): SetClause[T] = set(_city, x)
-  
   def town = _town
   def town_= (x: java.lang.String): SetClause[T] = set(_town, x)
-  
   def modify_at = _modify_at
   def modify_at_= (x: java.util.Date): SetClause[T] = set(_modify_at, x)
+  
+  @EntityInfo(name="m_address")
+  case class Row(
+    row_id: java.lang.Integer,
+    zip_code: java.lang.String,
+    state: java.lang.String,
+    city: java.lang.String,
+    town: java.lang.String,
+    modify_at: java.util.Date
+  )
   
 }

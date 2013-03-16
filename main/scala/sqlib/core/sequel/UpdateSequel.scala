@@ -7,6 +7,7 @@ import scala.reflect.ClassTag
 
 import org.apache.commons.dbutils.QueryRunner
 
+import sqlib.core.EntityInfo
 import sqlib.core.SetClause
 import sqlib.core.WhereClause
 
@@ -41,7 +42,7 @@ final class UpdateSequel[T] private[core] {
     
     val buff = new ListBuffer[String]
     
-    buff append s"update ${klass.getSimpleName.toLowerCase}"
+    buff append s"update ${klass.getAnnotation(classOf[EntityInfo]).name}"
     
     if (_set.isEmpty == false)
       buff append s"set ${_set.map( x => "%s = ?".format(x.name) ).mkString(", ")}"

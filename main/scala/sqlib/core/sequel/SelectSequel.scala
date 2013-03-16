@@ -7,10 +7,11 @@ import scala.reflect.ClassTag
 
 import org.apache.commons.dbutils.QueryRunner
 
+import sqlib.core.EntityInfo
 import sqlib.core.SortOrder
 import sqlib.core.WhereClause
 import sqlib.core.column.Column
-import sqlib.dbutils.CaseClassResultSetHandler
+import sqlib.dbutils.RowResultSetHandler
 
 /**
  * SelectSequel.
@@ -60,7 +61,7 @@ final class SelectSequel[T] private[core](columns: Column[T]*) {
     else
       buff append _columns.map(_.name).mkString(", ")
     
-    buff append s"from ${klass.getSimpleName.toLowerCase}"
+    buff append s"from ${klass.getAnnotation(classOf[EntityInfo]).name}"
     
     if (_where != null)
       buff append s"where ${_where._1}"
@@ -71,7 +72,7 @@ final class SelectSequel[T] private[core](columns: Column[T]*) {
     val sql = buff.mkString(" ")
     
     val runner = new QueryRunner
-    val rsh = new CaseClassResultSetHandler[T]
+    val rsh = new RowResultSetHandler[T]
     
     _where match {
       case x if x == null =>

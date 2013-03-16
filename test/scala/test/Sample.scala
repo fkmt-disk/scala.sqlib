@@ -12,7 +12,7 @@ object Sample extends App {
     
     import M_Address._
     
-    val rows: List[M_Address] = M_Address
+    val rows: List[M_Address.Row] = M_Address
       .select( row_id, zip_code, modify_at )
       .where( row_id >= 123 and (state ~ "hoge" or town <> "fuga") )
       .distinct

@@ -5,16 +5,9 @@ package ${pkg}
  * 
  * @since ${since}
  */
-case class ${table.tableClassName}(
-#foreach($col in $table.columns)
-#if($velocityCount == $table.columns.size()) #set($comma = "") #else #set($comma = ",") #end
-   ${col.columnName}: ${col.sqlType.javaType.name}${comma}
-#end
-)
-
 object ${table.tableClassName} extends ${table.superType.name} {
   
-  type T = ${table.tableClassName}
+  type T = ${table.tableClassName}.Row
   
   import java.sql.Types._
   import sqlib.core._
@@ -27,6 +20,14 @@ object ${table.tableClassName} extends ${table.superType.name} {
 #foreach($col in $table.columns)
   def ${col.columnName} = _${col.columnName}
   def ${col.columnName}_= (x: ${col.sqlType.javaType.name}): SetClause[T] = set(_${col.columnName}, x)
-  
 #end
+  
+  @EntityInfo(name="${table.tableName}")
+  case class Row(
+#foreach($col in $table.columns)
+#if($velocityCount == $table.columns.size()) #set($comma = "") #else #set($comma = ",") #end
+   ${col.columnName}: ${col.sqlType.javaType.name}${comma}
+#end
+  )
+  
 }
