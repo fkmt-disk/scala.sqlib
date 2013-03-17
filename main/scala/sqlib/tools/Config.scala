@@ -9,12 +9,17 @@ import java.util.Properties
  */
 object Config {
   
-  private[this] val resource_name = "/sqlib.properties"
+  private[this] val resource_name = "sqlib.properties"
   
   private[this] val conf = {
     val conf = new Properties
     
-    val resource = getClass.getClassLoader.getResourceAsStream(resource_name)
+    val resource = getClass.getClassLoader.getResourceAsStream(s"/$resource_name") match {
+      case res if res == null =>
+        ClassLoader.getSystemResourceAsStream(resource_name)
+      case res =>
+        res
+    }
     
     if (resource != null) {
       try {
@@ -49,6 +54,10 @@ object Config {
   val password = conf.get("password")
   
   val connection_factory = conf.get("connection_factory")
+  
+  val catalog = conf.get("catalog")
+  
+  val schema = conf.get("schema")
   
   val outdir = conf.get("outdir")
   

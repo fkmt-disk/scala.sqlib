@@ -48,8 +48,9 @@ private[tools] class TableInfo {
 }
 
 private[tools] object TableInfo {
-  
-  val map = Map(
+  val map = {
+    val map = scala.collection.mutable.Map[String, String]()
+    Map(
       "TABLE_CAT"                 -> "tableCat",
       "TABLE_SCHEM"               -> "tableSchem",
       "TABLE_NAME"                -> "tableName",
@@ -60,6 +61,11 @@ private[tools] object TableInfo {
       "TYPE_NAME"                 -> "typeName",
       "SELF_REFERENCING_COL_NAME" -> "selfReferencingColName",
       "REF_GENERATION"            -> "refGeneration"
-  )
+    ).iterator.foreach { entry =>
+      map += entry._1 -> entry._2
+      map += entry._1.toLowerCase -> entry._2
+    }
+    map.toMap
+  }
   
 }

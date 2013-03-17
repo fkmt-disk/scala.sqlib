@@ -75,27 +75,34 @@ private[tools] class ColumnInfo {
 
 private[tools] object ColumnInfo {
   
-  val map = Map(
-    "TABLE_CAT"         -> "tableCat",
-    "TABLE_SCHEM"       -> "tableSchem",
-    "TABLE_NAME"        -> "tableName",
-    "COLUMN_NAME"       -> "columnName",
-    "DATA_TYPE"         -> "dataType",
-    "TYPE_NAME"         -> "typeName",
-    "COLUMN_SIZE"       -> "columnSize",
-    "DECIMAL_DIGITS"    -> "decimapDigits",
-    "NUM_PREC_RADIX"    -> "numPrecRadix",
-    "NULLABLE"          -> "nullable",
-    "REMARKS"           -> "remarks",
-    "COLUMN_DEF"        -> "columnDef",
-    "CHAR_OCTET_LENGTH" -> "charOctetLength",
-    "ORDINAL_POSITION"  -> "ordinalPosition",
-    "IS_NULLABLE"       -> "isNullable",
-    "SCOPE_CATLOG"      -> "scopeCatlog",
-    "SCOPE_SCHEMA"      -> "scopeSchema",
-    "SCOPE_TABLE"       -> "scopeTable",
-    "SOURCE_DATA_TYPE"  -> "sourceDataType",
-    "IS_AUTOINCREMENT"  -> "isAutoincrement"
-  )
+  val map = {
+    val map = scala.collection.mutable.Map[String, String]()
+    Map(
+      "TABLE_CAT"         -> "tableCat",
+      "TABLE_SCHEM"       -> "tableSchem",
+      "TABLE_NAME"        -> "tableName",
+      "COLUMN_NAME"       -> "columnName",
+      "DATA_TYPE"         -> "dataType",
+      "TYPE_NAME"         -> "typeName",
+      "COLUMN_SIZE"       -> "columnSize",
+      "DECIMAL_DIGITS"    -> "decimapDigits",
+      "NUM_PREC_RADIX"    -> "numPrecRadix",
+      "NULLABLE"          -> "nullable",
+      "REMARKS"           -> "remarks",
+      "COLUMN_DEF"        -> "columnDef",
+      "CHAR_OCTET_LENGTH" -> "charOctetLength",
+      "ORDINAL_POSITION"  -> "ordinalPosition",
+      "IS_NULLABLE"       -> "isNullable",
+      "SCOPE_CATLOG"      -> "scopeCatlog",
+      "SCOPE_SCHEMA"      -> "scopeSchema",
+      "SCOPE_TABLE"       -> "scopeTable",
+      "SOURCE_DATA_TYPE"  -> "sourceDataType",
+      "IS_AUTOINCREMENT"  -> "isAutoincrement"
+    ).iterator.foreach { entry =>
+      map += entry._1 -> entry._2
+      map += entry._1.toLowerCase -> entry._2
+    }
+    map.toMap
+  }
   
 }

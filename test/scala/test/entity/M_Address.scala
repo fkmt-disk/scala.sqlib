@@ -3,7 +3,7 @@ package test.entity
 /**
  * M_Address.
  * 
- * @since 2013-03-16 19:51:10
+ * @since 2013-03-17 19:29:31
  */
 object M_Address extends sqlib.core.Table {
   

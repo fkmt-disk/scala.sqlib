@@ -60,12 +60,14 @@ object EntityGenerator {
     using(conn) { conn =>
       val dbmd = conn.getMetaData
       
-      val tables = using(dbmd.getTables(null, null, null, Array("TABLE", "VIEW"))) { rset =>
+      println(s"${dbmd.getURL}")
+      
+      val tables = using(dbmd.getTables(catalog.orNull, schema.orNull, null, Array("TABLE", "VIEW"))) { rset =>
         rset2list(rset, classOf[TableInfo], TableInfo.map)
       }
       
       for (table <- tables; name = table.tableName) {
-        table.columns = using(dbmd.getColumns(null, null, name, null)) { rset =>
+        table.columns = using(dbmd.getColumns(catalog.orNull, schema.orNull, name, null)) { rset =>
           rset2list(rset, classOf[ColumnInfo], ColumnInfo.map).asJava
         }
         
