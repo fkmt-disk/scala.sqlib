@@ -9,12 +9,12 @@ import java.util.Properties
  */
 object Config {
   
-  private[this] val resource_name = "sqlib.properties"
+  private[this] val resource_name = "/sqlib.properties"
   
   private[this] val conf = {
     val conf = new Properties
     
-    val resource = ClassLoader.getSystemResourceAsStream(resource_name)
+    val resource = getClass.getClassLoader.getResourceAsStream(resource_name)
     
     if (resource != null) {
       try {
